@@ -334,7 +334,7 @@ thread_t *chThdCreateStatic(void *wsp, size_t size,
              MEM_IS_ALIGNED(wsp, PORT_WORKING_AREA_ALIGN) &&
              (size >= THD_WORKING_AREA_SIZE(0)) &&
              MEM_IS_ALIGNED(size, PORT_STACK_ALIGN) &&
-             (prio <= HIGHPRIO) && (pf != NULL));
+             (pf != NULL));
 
 #if (CH_CFG_USE_REGISTRY == TRUE) &&                                        \
     ((CH_DBG_ENABLE_STACK_CHECK == TRUE) || (CH_CFG_USE_DYNAMIC == TRUE))
@@ -603,7 +603,6 @@ tprio_t chThdSetPriority(tprio_t newprio) {
   thread_t *currtp = chThdGetSelfX();
   tprio_t oldprio;
 
-  chDbgCheck(newprio <= HIGHPRIO);
 
   chSysLock();
 #if CH_CFG_USE_MUTEXES == TRUE

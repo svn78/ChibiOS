@@ -171,7 +171,7 @@ void dmaChannelDisable(DMA_CH_t *dmacp) {
  * @param[in] dmacp   pointer to the dma channel
  */
 void dmaChannelReset(DMA_CH_t *dmacp) {
-
+(void)dmacp;
 }
 
 void dmaEnableSingleShot(DMA_CH_t * dmacp ) {
