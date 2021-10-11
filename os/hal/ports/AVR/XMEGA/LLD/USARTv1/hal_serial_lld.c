@@ -77,7 +77,7 @@ SerialDriver SD5;
  * @brief   Driver default configuration.
  */
 static const SerialConfig default_config = {
-  38400,                      /* Baud rate.                                 */
+  SERIAL_DEFAULT_BITRATE,     /* Baud rate.                                 */
   false,                      /* Normal speed at default.                   */
   false,                      /* Disable the MPCM at default.               */
   false,                      /* Transmit 8 bits mode at default.           */
