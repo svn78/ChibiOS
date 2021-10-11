@@ -273,8 +273,6 @@ static void usart_start(SerialDriver *sdp, const SerialConfig *config) {
   usart_cfg_pmode(sdp, config);
   usart_cfg_chsize(sdp, config);
   usart_cfg_baudrate(sdp, config);
-  sdp->usart->CTRLB |= (USART_RXEN_bm);
-  sdp->usart->CTRLB |= (USART_TXEN_bm);
 }
 
 /**
@@ -289,11 +287,13 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
   USART_t *u = sdp->usart;
 
   usart_start(sdp, config);
+  /* Set low prio to RX, TX and DRE ints */
   u->CTRLA = (u->CTRLA & ~USART_RXCINTLVL_gm) | USART_RXCINTLVL_LO_gc;
   u->CTRLA = (u->CTRLA & ~USART_TXCINTLVL_gm) | USART_TXCINTLVL_LO_gc;
   u->CTRLA = (u->CTRLA & ~USART_DREINTLVL_gm) | USART_DREINTLVL_LO_gc;
+  /* Enable low prio int */
   PMIC.CTRL |= PMIC_LOLVLEX_bm;
-  sei();
+  /* Enable reveiver and transmitter */
   u->CTRLB |= (USART_RXEN_bm);
   u->CTRLB |= (USART_TXEN_bm);
 }
@@ -335,7 +335,7 @@ static void notify1(io_queue_t *qp) {
 
   (void)qp;
   USARTC0.CTRLA &= ~USART_DREINTLVL_gm;
-  USARTC0.CTRLA |= USART_DREINTLVL_MED_gc;
+  USARTC0.CTRLA |= USART_DREINTLVL_LO_gc;
 }
 #endif
 #if AVR_SERIAL_USE_USART2 || defined(__DOXYGEN__)
