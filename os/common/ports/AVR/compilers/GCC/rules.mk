@@ -131,6 +131,13 @@ MATH_LIB = -lm
 LDFLAGS = -Wl,-Map=$(BUILDDIR)/$(PROJECT).map,--cref,--gc-sections
 LDFLAGS += -Wl,-u,vfprintf -lprintf_min -Wl,-u,vfscanf -lscanf_min -lm
 
+
+# Generate dependency information
+ASFLAGS  += -MD -MP -MF $(DEPDIR)/$(@F).d
+ASXFLAGS += -MD -MP -MF $(DEPDIR)/$(@F).d
+CFLAGS   += -MD -MP -MF $(DEPDIR)/$(@F).d
+CPPFLAGS += -MD -MP -MF $(DEPDIR)/$(@F).d
+
 #
 # Makefile rules
 #
@@ -151,11 +158,14 @@ ifneq ($(USE_VERBOSE_COMPILE),yes)
 endif
 	@mkdir -p $(BUILDDIR)
 
-$(OBJDIR):
+$(OBJDIR): $(DEPDIR)
 	@mkdir -p $(OBJDIR)
 
 $(LSTDIR):
 	@mkdir -p $(LSTDIR)
+
+$(DEPDIR):
+	@mkdir -p $(DEPDIR)
 
 $(ACPPOBJS) : $(OBJDIR)/%.o : %.cpp Makefile
 ifeq ($(USE_VERBOSE_COMPILE),yes)
@@ -270,7 +280,11 @@ $(BUILDDIR)/lib$(PROJECT).a: $(OBJS)
 
 clean: CLEAN_RULE_HOOK
 	@echo Cleaning
-	-rm -fR .dep $(BUILDDIR)
+	@echo - $(DEPDIR)
+	@-rm -fR $(DEPDIR)/* $(BUILDDIR)/* 2>/dev/null
+	@-if [ -d "$(DEPDIR)" ]; then rmdir -p --ignore-fail-on-non-empty $(subst ./,,$(DEPDIR)) 2>/dev/null; fi
+	@echo - $(BUILDDIR)
+	@-if [ -d "$(BUILDDIR)" ]; then rmdir -p --ignore-fail-on-non-empty $(subst ./,,$(BUILDDIR)) 2>/dev/null; fi
 	@echo
 	@echo Done
 
@@ -279,6 +293,6 @@ CLEAN_RULE_HOOK:
 #
 # Include the dependency files, should be the last of the makefile
 #
--include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
+-include $(wildcard $(DEPDIR)/*)
 
 # *** EOF ***
