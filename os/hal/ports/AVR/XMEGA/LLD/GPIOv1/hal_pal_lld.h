@@ -328,7 +328,7 @@ typedef uint8_t ioeventmode_t;
  *
  * @notapi
  */
-#define pal_lld_setpad(port, pad)     ((port)->OUTSET |= (1 << pad))
+#define pal_lld_setpad(port, pad)     ((port)->OUTSET = (1 << pad))
 
 /**
  * @brief   Clears a pad logical state to @p PAL_LOW.
@@ -338,7 +338,7 @@ typedef uint8_t ioeventmode_t;
  *
  * @notapi
  */
-#define pal_lld_clearpad(port, pad)   ((port)->OUTCLR |= (1 << pad))
+#define pal_lld_clearpad(port, pad)   ((port)->OUTCLR = (1 << pad))
 
 /**
  * @brief   Pad event enable.
